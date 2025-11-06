@@ -23,10 +23,10 @@ class StoreOrderRequest extends FormRequest
     {
         return [
             "order_number" => ["required", "integer"],
-            "order_items" => ["required", "array"],
-            "order_items.*.product_id" => ["required", "integer","exists:products,id"],
-            "order_items.*.quantity" => ["required", "integer"],
-            "order_items.*.price" => ["required", "integer"],
+            // "order_items" => ["required", "array"],
+            // "order_items.*.product_id" => ["required", "integer","exists:products,id"],
+            // "order_items.*.quantity" => ["required", "integer"],
+            // "order_items.*.price" => ["required", "integer"],
             
         ];
     }

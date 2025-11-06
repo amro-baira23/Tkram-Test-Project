@@ -28,6 +28,7 @@ class StoreProductRequest extends FormRequest
             "price" => ["required", "integer"],
             "quantity" => ["required", "integer"],
             "status" => ["required", Rule::in(["active","inactive"])],
+            "categories_ids.*" => ["required","integer","exists:categories,id"]
         ];
     }
 }

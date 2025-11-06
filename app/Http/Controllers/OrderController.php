@@ -37,15 +37,15 @@ class OrderController extends Controller
                 "status" => "pending",
             ]);
             $total = 0;
-            foreach ($request->order_items as $item){
-                OrderItem::create([
+            $order_items = $request->user()->orderItems()->get();
+            foreach($order_items as $orderItem){
+                $total += $orderItem->quantity;
+                $orderItem->update([
                     "order_id" => $order->id,
-                    "product_id" => $item["product_id"],
-                    "quantity" => $item["quantity"],
-                    "price" => $item["price"],
                 ]);
-                $total += $item["price"];
+                
             }
+            $request->user()->orderItems()->detatch();
             $order->total = $total;
             $order->save();
             return $order;

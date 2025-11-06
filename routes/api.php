@@ -14,9 +14,9 @@ Route::prefix("/v1")->group(function(){
 Route::middleware(["auth:sanctum","throttle:api"])->prefix("/v1/products")->group(function(){
     Route::get('/', [ProductController::class, 'index']);
     Route::get("/{product}", [ProductController::class, 'show'] );
-    Route::post("/", [ProductController::class, 'store'] );
-    Route::put("/{product}", [ProductController::class, 'update'] );
-    Route::delete("/{product}", [ProductController::class, 'destroy'] );
+    Route::middleware("role:admin")->post("/", [ProductController::class, 'store'] );
+    Route::middleware("role:admin")->put("/{product}", [ProductController::class, 'update'] );
+    Route::middleware("role:admin")->delete("/{product}", [ProductController::class, 'destroy'] );
 });
 
 Route::middleware(["auth:sanctum","throttle:api"])->prefix("/v1/orders")->group(function(){
@@ -31,6 +31,6 @@ Route::middleware(["auth:sanctum","throttle:api"])->prefix("/v1/orders")->group(
 Route::middleware(["auth:sanctum","throttle:api"])->prefix("/v1/cart")->group(function(){
     Route::get('/', [CartItemController::class, 'index']);
     Route::post("/", [CartItemController::class, 'store'] );
-    Route::delete("/{cartItem}", [CartItemController::class, 'destroy'] );
+    Route::delete("/{orderItem}", [CartItemController::class, 'destroy'] );
     Route::delete("/", [CartItemController::class, 'destroyAll'] );
 });

@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -34,6 +35,10 @@ class User extends Authenticatable
     ];
 
 
+    public function hasRole($role){
+        return $this->role->name == $role;
+    }
+
     public function orders(): HasMany{
         return $this->hasMany(Order::class,"user_id");
     }
@@ -47,6 +52,11 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class,"role_id");
     }
 
+    public function orderItems(): BelongsToMany{
+        return $this->belongsToMany(OrderItem::class,"cart_items","user_id","order_item_id");
+    }
+
+    
     protected function casts(): array
     {
         return [
