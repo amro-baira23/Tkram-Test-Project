@@ -17,7 +17,7 @@ class Product extends Model
 
     public $guarded = [];
 
-    public function product_formatted(): Attribute{
+    public function price(): Attribute{
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $attributes["price"] . " s.p"
         );

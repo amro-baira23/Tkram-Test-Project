@@ -59,19 +59,9 @@ class OrderTest extends TestCase
 
     public function test_order_reduces_product(): void
     {
-         $role = Role::create([
-            "name" => "customer",
-        ]);
-
-        $user = User::create([
-            "name" => "custumer",
-            "email" => "customer@example.com",
-            "password" => "password123",
-            "role_id" => $role->id,
-        ]);
-
-        $token = $user->createToken("customer")->plainTextToken;
         
+        $headers = $this->acquire_token("customer");
+ 
         $product= Product::factory()->create();
 
         $response = $this->post('/api/v1/cart',[
@@ -82,10 +72,7 @@ class OrderTest extends TestCase
                     "price" => fake()->numberBetween(300,700),
                 ]
             ],
-        ],[
-            "Accept" => "application/json",
-            "Authorization" => "Bearer $token",
-        ]);
+        ],$headers);
 
         $response->assertStatus(200);
 
@@ -95,10 +82,7 @@ class OrderTest extends TestCase
             "order_number" => fake()->numberBetween(1,100),
             "total" => fake()->numberBetween(300,700),
             "status" => fake()->randomElement(['pending', 'processing', 'completed', 'cancelled'])
-        ],[
-            "Accept" => "application/json",
-            "Authorization" => "Bearer $token",
-        ]);
+        ],$headers);
 
         $response->assertStatus(201);
 
