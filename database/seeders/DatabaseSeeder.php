@@ -43,8 +43,8 @@ class DatabaseSeeder extends Seeder
 
         Category::factory(5)->create();
         Product::factory(20)->create();
-        Order::factory(20)->create();
-        OrderItem::factory(100)->create();
+        Order::factory(5)->create();
+        OrderItem::factory(20)->create();
 
     }
 }
