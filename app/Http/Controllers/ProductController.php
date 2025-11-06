@@ -15,8 +15,9 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Product::filter($request);
+        $data = Product::with("categories")->filter($request);
         $data = $data->paginate(20);
+        
         return $data;
     }
 

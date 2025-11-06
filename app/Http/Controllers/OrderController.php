@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
-use App\Http\Requests\UpdateOrderRequest;
-use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
@@ -29,6 +28,13 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
+         $order_items = $request->user()->orderItems()->get();
+        if($order_items->isEmpty()){
+            return response([
+                "message" => "can't order with empty cart"
+            ], 403);
+        }
+
         $order = DB::transaction(function () use ($request) {
             $order = Order::create([
                 "user_id" => $request->user()->id,
@@ -37,15 +43,22 @@ class OrderController extends Controller
                 "status" => "pending",
             ]);
             $total = 0;
-            $order_items = $request->user()->orderItems()->get();
+
+            $order_items = $request->user()
+                ->orderItems()
+                ->with("product")
+                ->get();
+
             foreach($order_items as $orderItem){
-                $total += $orderItem->quantity;
+                $total += $orderItem->price;
+                $product = $orderItem->product;
                 $orderItem->update([
                     "order_id" => $order->id,
                 ]);
+                $product->reduceQuantity($orderItem->quantity);
                 
             }
-            $request->user()->orderItems()->detatch();
+            $request->user()->orderItems()->detach();
             $order->total = $total;
             $order->save();
             return $order;
@@ -59,6 +72,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
+        Gate::authorize("view",$order);
         $order->load("orderItems");
         return $order;
     }

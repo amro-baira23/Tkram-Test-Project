@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,9 +41,20 @@ class Product extends Model
         return $this->belongsToMany(Category::class,"category_products","product_id","category_id");
     }
 
+    public function reduceQuantity(int $amount){
+        $this->quantity -= $amount;
+        if($this->quantity<0){
+            throw new AuthorizationException("product $this->name is unavailable, please update your cart");
+
+        }
+        $this->save();
+    }
+
     public function scopeFilter(Builder $query){
         $query = $query->when(request("category"), function ($query, $category) {
-            return $query->where("name", "LIKE", '%' . $category . '%');
+            return $query->whereHas("categories", function($query) use ($category){
+                return $query->where("name", "LIKE", '%' . $category . '%');
+            });
         })->when(request("price_min"), function ($query, $price_min) {
             return $query->where("price", "<" , $price_min );
         })->when(request("price_max"), function ($query, $price_max) {
