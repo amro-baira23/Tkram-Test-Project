@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,24 +14,46 @@ class Product extends Model
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory;
 
+    public $guarded = [];
 
+    public function product_formatted(): Attribute{
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => $attributes["price"] . " s.p"
+        );
+    }
     protected static function boot()
     {
         parent::boot();
 
-        static::creating(function ($product) {
-            $product->slug = Str::slug($product->name);
+             static::created(function ($product) {
+            $product->slug = Str::slug($product->name . '-' . $product->id);
+            $product->save();
         });
-
         static::updating(function ($product) {
             if ($product->isDirty('name')) {
-                $product->slug = Str::slug($product->name);
+                $product->slug = Str::slug($product->name . '-' . $product->id);
             }
         });
     }
 
     public function categories(): BelongsToMany{
         return $this->belongsToMany(Category::class,"category_products","product_id","category_id");
+    }
+
+    public function scopeFilter(Builder $query){
+        $query = $query->when(request("category"), function ($query, $category) {
+            return $query->where("name", "LIKE", '%' . $category . '%');
+        })->when(request("price_min"), function ($query, $price_min) {
+            return $query->where("price", "<" , $price_min );
+        })->when(request("price_max"), function ($query, $price_max) {
+            return $query->where("price", ">" , $price_max );
+        })->when(request("in_stock"), function ($query, $in_stock) {
+            return $query->inStock();
+        })->when(request("search"), function ($query, $value) {
+            return $query->where("name", "LIKE", '%' . $value . '%');
+        });
+        $query->active();
+        return $query; 
     }
 
     public function scopeActive($query) { 

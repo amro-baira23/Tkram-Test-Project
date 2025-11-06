@@ -10,7 +10,9 @@ class OrderItem extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderItemFactory> */
     use HasFactory;
-
+    
+    public $guarded = [];
+    
     public function product(): BelongsTo{
         return $this->belongsTo(Order::class,"product_id");
     }

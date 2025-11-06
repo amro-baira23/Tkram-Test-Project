@@ -5,15 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $data = Product::filter($request);
+        $data = $data->paginate(20);
+        return $data;
     }
 
     /**
@@ -21,7 +24,9 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        //
+        $product = Product::create($request->validated());
+
+        return $product;
     }
 
     /**
@@ -29,7 +34,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+       
+        return $product;
     }
 
     /**
@@ -37,7 +43,10 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $product->update(
+            $request->validated()
+        );
+        return $product;
     }
 
     /**
@@ -45,6 +54,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
     }
 }

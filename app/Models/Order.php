@@ -11,6 +11,8 @@ class Order extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
+    
+    public $guarded = [];
 
     public function user(): BelongsTo{
         return $this->belongsTo(User::class,"user_id");

@@ -5,13 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Role extends Model
+class CartItem extends Model
 {
-    /** @use HasFactory<\Database\Factories\RoleFactory> */
+    /** @use HasFactory<\Database\Factories\CartItemFactory> */
     use HasFactory;
 
-    const CREATED_AT = null;
-    const UPDATED_AT = null;
-
     public $guarded = [];
+    
 }
