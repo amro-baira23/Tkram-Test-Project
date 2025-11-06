@@ -15,7 +15,6 @@ class HasRole
      */
     public function handle(Request $request, Closure $next, $role): Response
     {
-        echo $role;
          if (!$request->user()->hasRole($role)){
             return response([
                 "message" => "user isn't $role."

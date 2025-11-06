@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -24,8 +25,19 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $product = Product::create($request->validated());
-
+        $product = DB::transaction(function () use($request){
+            $category_ids = $request->validated("categories_ids");
+            $product = Product::create([
+                "name" => $request->name,
+                "description" => $request->description,
+                "quantity" => $request->quantity,
+                "price" => $request->price,
+                "status" => $request->status,
+            ]);
+            $product->categories()->attach($category_ids);
+            $product->load("categories");
+            return $product;
+        });
         return $product;
     }
 
