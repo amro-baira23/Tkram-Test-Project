@@ -11,7 +11,7 @@ a mini project that was meant to test my comprehensive knowledge in back develop
    ```
    php artisan serve 
    ```
-*- Run Tests:
+*. Run Tests:
    ```
    php artisan test 
    ```
