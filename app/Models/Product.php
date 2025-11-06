@@ -5,12 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Role extends Model
+class Product extends Model
 {
-    /** @use HasFactory<\Database\Factories\RoleFactory> */
+    /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory;
-
-    const CREATED_AT = null;
-    const UPDATED_AT = null;
-
 }
