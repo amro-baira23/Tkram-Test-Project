@@ -22,15 +22,7 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+ 
 
 
     public function orders(): HasMany{
