@@ -5,34 +5,16 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
+use Symfony\Component\CssSelector\Node\FunctionNode;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable 
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
     /**
      * The attributes that are mass assignable.
      *
@@ -50,6 +32,10 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+
+    public function orders(): HasMany{
+        return $this->hasMany(Order::class,"user_id");
+    }
     /**
      * Get the attributes that should be cast.
      *
