@@ -25,8 +25,8 @@ class StoreProductRequest extends FormRequest
         return [
             "name" => ["required", "string"],
             "description" => ["required", "string"],
-            "price" => ["required", "integer"],
-            "quantity" => ["required", "integer"],
+            "price" => ["required", "integer","min:0"],
+            "quantity" => ["required", "integer","min:0"],
             "status" => ["required", Rule::in(["active","inactive"])],
             "categories_ids" => ["required","array","exists:categories,id"],
         ];
